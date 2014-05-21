@@ -1,0 +1,60 @@
+// ################################################################################
+// #                                                                              #
+// # Counter                                                                      #
+// #   Copyright (C) 2014 - Florian Asche <info@florian-asche.de                  #
+// #                                                                              #
+// # This program is free software; you can redistribute it and/or modify it      #
+// # under the terms of the GNU General Public License (either version 2 or       #
+// # version 3) as published by the Free Software Foundation.                     #
+// #                                                                              #
+// # This program is distributed in the hope that it will be useful,              #
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of               #
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                #
+// # GNU General Public License for more details.                                 #
+// #                                                                              #
+// # You should have received a copy of the GNU General Public License            #
+// # along with this program; if not, write to the Free Software                  #
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.                    #
+// #                                                                              #
+// # For more information on the GPL, please go to:                               #
+// # http://www.gnu.org/copyleft/gpl.html                                         #
+// #                                                                              #
+// #           Läuft nur auf Prozessoren mit Pin Change Interrupt                 #
+// #           ATMega644 / ATMega644p                                             #
+// #                                                                              #
+// ################################################################################
+
+C6_HEADER(`/* This will be in control6.h */')
+
+CONTROL_START
+        ECMD_GLOBAL(InterruptCall, 0, uint16_t)
+        ON STARTUP DO
+                DDRA    &=      ~(1 << PA7);     // Clear the PB0 pin
+                // PA7 (PCINT7 pin) is now an input
+
+                PORTA   |=      (1 << PA7);    // turn On the Pull-up
+                // PB0 is now an input with pull-up enabled
+
+                PCICR |= (1 << PCIE0);    // set PCIE0 to enable PCMSK0 scan
+                PCMSK0 |= (1 << PCINT7);  // set PCINT7 to trigger an interrupt on state change
+
+                // USE external interrupts? int0 or int1
+                //_EIMSK |= _BV(INT0);  // external interrupt request 0 enable
+                //_EICRA |= _BV(ISC01); // the falling edge of INT0 generates an interrupt request.
+
+        END
+CONTROL_END
+
+// Die IF tut nicht :(
+ISR(PCINT0_vect) {
+    if( (1 << PA7) == 1 )
+    {
+        /* LOW to HIGH pin change */
+        InterruptCall ++;
+    }
+    else
+    {
+        /* HIGH to LOW pin change */
+        //InterruptCall ++;
+    }
+}
