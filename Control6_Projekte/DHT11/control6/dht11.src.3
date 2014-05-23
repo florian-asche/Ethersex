@@ -1,0 +1,61 @@
+// ################################################################################
+// #                                                                              #
+// # Counter                                                                      #
+// #   Copyright (C) 2014 - Florian Asche <info@florian-asche.de                  #
+// #                                                                              #
+// # This program is free software; you can redistribute it and/or modify it      #
+// # under the terms of the GNU General Public License (either version 2 or       #
+// # version 3) as published by the Free Software Foundation.                     #
+// #                                                                              #
+// # This program is distributed in the hope that it will be useful,              #
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of               #
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                #
+// # GNU General Public License for more details.                                 #
+// #                                                                              #
+// # You should have received a copy of the GNU General Public License            #
+// # along with this program; if not, write to the Free Software                  #
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.                    #
+// #                                                                              #
+// # For more information on the GPL, please go to:                               #
+// # http://www.gnu.org/copyleft/gpl.html                                         #
+// #                                                                              #
+// ################################################################################
+
+#include <stdio.h>
+#include <math.h>
+
+CLOCK_USED()
+
+CONTROL_START
+
+THREAD(mainloop)
+        dnl Update the time ...
+//        TTY_SELECT(clock)
+//        TTY_HOME()
+//        TTY_WRITE_TIME()
+
+	//int16_t dhttemp = ONEWIRE_GET(ONEWIRE-ID);
+//	TTY_SELECT(dht11)
+//	TTY_HOME()
+//	TTY_WRITE(dht_global.temp)	
+	float temperatur = (a * DHT_TEMPERATURE) / (b + DHT_TEMPERATURE) + log(DHT_HUMIDITY/100);
+
+        WAIT(1)
+THREAD_END(mainloop)
+
+ON STARTUP DO
+        dnl Initialize display and write out greeting
+        TTY_CLEAR()
+        TTY_GOTO(2,0)
+//        TTY_WRITE("Hallo ROOT\n")
+	TTY_WRITE(temp123)
+
+	TTY_CREATE_WINDOW(dht11, 1, 8, 0, 0)
+
+//        dnl Create sub-window to display a clock at the upper right-hand side
+//        TTY_CREATE_WINDOW(clock, 1, 8, 0, COLS - 8)
+
+        THREAD_START(mainloop)
+END
+
+CONTROL_END

@@ -1,0 +1,65 @@
+// ################################################################################
+// #                                                                              #
+// # Counter                                                                      #
+// #   Copyright (C) 2014 - Florian Asche <info@florian-asche.de                  #
+// #                                                                              #
+// # This program is free software; you can redistribute it and/or modify it      #
+// # under the terms of the GNU General Public License (either version 2 or       #
+// # version 3) as published by the Free Software Foundation.                     #
+// #                                                                              #
+// # This program is distributed in the hope that it will be useful,              #
+// # but WITHOUT ANY WARRANTY; without even the implied warranty of               #
+// # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                #
+// # GNU General Public License for more details.                                 #
+// #                                                                              #
+// # You should have received a copy of the GNU General Public License            #
+// # along with this program; if not, write to the Free Software                  #
+// # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.                    #
+// #                                                                              #
+// # For more information on the GPL, please go to:                               #
+// # http://www.gnu.org/copyleft/gpl.html                                         #
+// #                                                                              #
+// ################################################################################
+
+#include <stdio.h>
+#include <math.h>
+CLOCK_USED()
+ 
+CONTROL_START
+ 
+THREAD(mainloop)
+ 	//ON ONCE CLOCK_SEC == 0 DO
+
+//        TTY_SELECT(clock)
+//        TTY_HOME()
+//        TTY_WRITE_TIME()
+
+	float temperatur = (DHT_TEMPERATURE/10);
+	//TTY_GOTO(1,0)	
+	//TTY_SELECT(dht11)
+	//TTY_HOME()
+	TTY_CLEAR()
+	TTY_GOTO(2,0)
+	TTY_WRITE("%f", temperatur)
+	//fprintf_P(&lcd, PSTR("Taupunkt: %f"), temperatur);
+
+	WAIT(1)
+	//END
+THREAD_END(mainloop)
+ 
+ON STARTUP DO
+        TTY_CLEAR()
+        TTY_HOME()
+        TTY_WRITE("BOOTING...")
+
+        TTY_CLEAR()
+        TTY_GOTO(2,0)
+//        TTY_WRITE("Hallo ROOT\n")
+        //TTY_CREATE_WINDOW(clock, 1, 8, 0, COLS - 8)
+        //TTY_GOTO(1,0)
+        //TTY_CREATE_WINDOW(dht11, 1, 14, 0, 0)
+
+        THREAD_START(mainloop);
+END
+ 
+CONTROL_END
