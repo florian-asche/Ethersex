@@ -35,12 +35,12 @@ CONTROL_START
 	END
 
         // Impulse zählen eingang1
-        ON PIN_FALLING(eingang0) DO
+        ON PIN_FALLING(eingang1) DO
                 counter1++;
         END
 
         // Impulse zählen eingang2
-        ON PIN_FALLING(eingang0) DO
+        ON PIN_FALLING(eingang2) DO
                 counter2++;
         END
 
